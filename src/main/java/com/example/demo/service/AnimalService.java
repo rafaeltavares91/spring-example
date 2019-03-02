@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 import com.example.demo.domain.Animal;
 
 @Service
-public interface AnimalService {
+public interface AnimalService extends AbstractCRUDService<Animal> {
 
-	public Iterable<Animal> findAll();
-	
 }

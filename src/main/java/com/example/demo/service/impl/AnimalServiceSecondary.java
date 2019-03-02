@@ -11,15 +11,10 @@ import com.example.demo.service.AnimalService;
 @Service
 @Profile("prod")
 @Primary
-public class AnimalServiceSecondary implements AnimalService {
+public class AnimalServiceSecondary extends CRUDService<Animal> implements AnimalService {
 
-	private final AnimalRepository animalRepository;
-	
-	public AnimalServiceSecondary(AnimalRepository animalRepository) {
-		this.animalRepository=animalRepository;
+	public AnimalServiceSecondary(AnimalRepository repository) {
+		super(repository);
 	}
-	
-	public Iterable<Animal> findAll(){
-		return animalRepository.findAll();
-	}
+
 }

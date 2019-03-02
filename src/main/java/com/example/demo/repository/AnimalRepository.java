@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.example.demo.domain.Animal;
 
 @Repository 
-public interface AnimalRepository extends CrudRepository<Animal, Integer>{
+public interface AnimalRepository extends CrudRepository<Animal, Long>{
 
 }
