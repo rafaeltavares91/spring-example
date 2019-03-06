@@ -1,12 +1,14 @@
 package com.example.demo.service.impl;
 
-import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -22,7 +24,7 @@ public class PessoaServiceImplTest {
 	@Mock
 	private PessoaRepository pessoaRepository;
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		pessoaService = new PessoaServiceImpl(pessoaRepository);

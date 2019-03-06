@@ -6,6 +6,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.OneToMany;
 
+import lombok.Builder;
+
+@Builder
 @Entity
 public class TipoAnimal extends EntidadeBase {
 	

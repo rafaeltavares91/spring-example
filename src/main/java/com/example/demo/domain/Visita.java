@@ -7,6 +7,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.Builder;
+
+@Builder
 @Entity
 @Table(name = "visita")
 public class Visita extends EntidadeBase {

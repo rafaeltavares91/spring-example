@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -8,12 +9,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
-import java.util.List;
+import java.util.Set;
 
-import static org.mockito.Mockito.eq;
-
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -23,7 +22,7 @@ import org.springframework.ui.Model;
 
 import com.example.demo.domain.Pessoa;
 import com.example.demo.service.PessoaService;
-import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 
 public class PessoaControllerTest {
 
@@ -35,7 +34,7 @@ public class PessoaControllerTest {
 	@Mock
 	private Model model;
 	
-	@Before
+	@BeforeEach
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		pessoaController = new PessoaController(pessoaService);
@@ -49,7 +48,6 @@ public class PessoaControllerTest {
 			.andExpect(view().name("pessoa/list"));
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Test
 	public void pessoa() {
 		Pessoa p1 = new Pessoa();
@@ -58,17 +56,18 @@ public class PessoaControllerTest {
 		Pessoa p2 = new Pessoa();
 		p2.setId(2l);
 		p2.setNome("Vanessa Dantas");
-		List<Pessoa> pessoas = Lists.newArrayList(p1, p2);
+		Set<Pessoa> pessoas = Sets.newHashSet(p1, p2);
 		
 		when(pessoaService.findAll()).thenReturn(pessoas);
 		
-		ArgumentCaptor<List<Pessoa>> argumentoCaptor = ArgumentCaptor.forClass(List.class);
+		@SuppressWarnings("unchecked")
+		ArgumentCaptor<Set<Pessoa>> argumentoCaptor = ArgumentCaptor.forClass(Set.class);
 		
 		String viewName = pessoaController.pessoa(model);
 		assertEquals("pessoa/list", viewName);
 		verify(pessoaService, times(1)).findAll();
 		verify(model, times(1)).addAttribute(eq("pessoas"), argumentoCaptor.capture());
-		List<Pessoa> listInController = argumentoCaptor.getValue();
+		Set<Pessoa> listInController = argumentoCaptor.getValue();
 		assertEquals(2, listInController.size());
 	}
 	
