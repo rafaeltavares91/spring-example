@@ -4,21 +4,38 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
-public class TipoAnimal extends EntidadeBase {
+public class TipoAnimal implements Persistivel {
 	
-	private static final long serialVersionUID = 1L;
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 	
 	private String descricao;
 	
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "tipoAnimal")
 	private Set<Raca> racas;
+	
+	public Long getId() {
+		return id;
+	}
 
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
 	public String getDescricao() {
 		return descricao;
 	}

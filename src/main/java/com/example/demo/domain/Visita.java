@@ -3,18 +3,27 @@ package com.example.demo.domain;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
 
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name = "visita")
-public class Visita extends EntidadeBase {
+public class Visita implements Persistivel {
 	
-	private static final long serialVersionUID = 1L;
+	@Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
 	private LocalDate data;
 	
@@ -23,6 +32,14 @@ public class Visita extends EntidadeBase {
 	@ManyToOne
     @JoinColumn(name = "id_animal")
 	private Animal animal;
+	
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public LocalDate getData() {
 		return data;
@@ -47,5 +64,5 @@ public class Visita extends EntidadeBase {
 	public void setAnimal(Animal animal) {
 		this.animal = animal;
 	}
-	
+
 }

@@ -4,18 +4,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import com.example.demo.domain.Pessoa;
-import com.example.demo.service.AnimalService;
 import com.example.demo.service.PessoaService;
 
 @Component
 public class DataLoader implements CommandLineRunner {
 
 	private final PessoaService pessoaService;
-	private final AnimalService animalService;
 	
-	public DataLoader(PessoaService pessoaService, AnimalService animalService) {
+	public DataLoader(PessoaService pessoaService) {
 		this.pessoaService = pessoaService;
-		this.animalService = animalService;
 	}
 	
 	@Override
@@ -24,12 +21,8 @@ public class DataLoader implements CommandLineRunner {
 	}
 
 	private void loadData() {
-		Pessoa p1 = new Pessoa();
-		p1.setNome("Rafael Tavares");
-		pessoaService.save(p1);
-		Pessoa p2 = new Pessoa();
-		p2.setNome("Miguel");
-		pessoaService.save(p2);
+		pessoaService.save(Pessoa.builder().nome("Rafael Tavares").build());
+		pessoaService.save(Pessoa.builder().nome("Miguel").build());
 	}
 	
 }
