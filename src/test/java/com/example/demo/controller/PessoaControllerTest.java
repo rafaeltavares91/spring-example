@@ -5,9 +5,9 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.Arrays;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -61,15 +61,6 @@ public class PessoaControllerTest {
 	}
 	
 	@Test
-	public void find() throws Exception {
-		mockMvc.perform(get("/pessoa/find"))
-			.andExpect(status().isOk())
-			.andExpect(view().name("notimplemented"));
-		
-		verifyZeroInteractions(pessoaService);
-	}
-	
-	@Test
 	public void show() throws Exception {
 		when(pessoaService.findById(anyLong())).thenReturn(Pessoa.builder().id(1l).build());
 		
@@ -78,5 +69,50 @@ public class PessoaControllerTest {
 			.andExpect(view().name("pessoa/show"))
 			.andExpect(model().attribute("pessoa", hasProperty("id", is(1l))));
 	}
+	
+	@Test
+    void find() throws Exception {
+        mockMvc.perform(get("/pessoa/find"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("pessoa/find"))
+                .andExpect(model().attributeExists("pessoa"));
+
+        verifyZeroInteractions(pessoaService);
+    }
+	
+	@Test
+    void processFindReturnOne() throws Exception {
+        when(pessoaService.findAllByNomeLike(anyString())).thenReturn(Arrays.asList(Pessoa.builder().id(1l).build()));
+
+        mockMvc.perform(get("/pessoa/procesFind"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/pessoa/show/1"));
+    }
+	
+	@Test
+    void processFindReturnMany() throws Exception {
+        when(pessoaService.findAllByNomeLike(anyString()))
+                .thenReturn(Arrays.asList(
+                		Pessoa.builder().id(1l).build(),
+                		Pessoa.builder().id(2l).build()));
+
+        mockMvc.perform(get("/pessoa/procesFind"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("pessoa/list"))
+                .andExpect(model().attribute("pessoas", hasSize(2)));
+    }
+	
+	@Test
+    void processFindEmptyReturnMany() throws Exception {
+        when(pessoaService.findAllByNomeLike(anyString()))
+                .thenReturn(Arrays.asList(
+                		Pessoa.builder().id(1l).build(),
+                		Pessoa.builder().id(2l).build()));
+
+        mockMvc.perform(get("/pessoa/procesFind").param("nome",""))
+                .andExpect(status().isOk())
+                .andExpect(view().name("pessoa/list"))
+                .andExpect(model().attribute("pessoas", hasSize(2)));
+    }
 	
 }

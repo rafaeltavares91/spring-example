@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
@@ -21,6 +22,16 @@ public class PessoaServiceImpl extends CRUDService<Pessoa> implements PessoaServ
 	@Override
 	public Optional<Pessoa> findByNome(String nome) {
 		return repository.findByNome(nome);
+	}
+	
+	@Override
+	public List<Pessoa> findAllByNome(String nome) {
+		return repository.findAllByNome(nome);
+	}
+	
+	@Override
+	public List<Pessoa> findAllByNomeLike(String nome) {
+		return repository.findAllByNome(nome);
 	}
 	
 }
