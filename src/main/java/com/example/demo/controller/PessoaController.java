@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -93,11 +94,11 @@ public class PessoaController {
 	
 	@GetMapping("/{pessoaId}/edit")
     public String initUpdateForm(@PathVariable Long pessoaId, Model model) {
-        model.addAttribute(pessoaService.findById(pessoaId));
-        return "redirect:/pessoa/form";
+        model.addAttribute("pessoa", pessoaService.findById(pessoaId));
+        return "pessoa/form";
     }
 
-    @PostMapping("/{pessoaId}/edit")
+	@PutMapping("/{pessoaId}/edit")
     public String processUpdateForm(@Valid Pessoa pessoa, BindingResult result, @PathVariable Long pessoaId) {
         if (result.hasErrors()) {
             return "redirect:/pessoa/form";
@@ -107,5 +108,11 @@ public class PessoaController {
             return "redirect:/pessoa/show/" + pessoa.getId();
         }
     }
+    
+    @GetMapping("/delete/{pessoaId}")
+	public String delete(@PathVariable("pessoaId") Long pessoaId) {
+		pessoaService.deleteById(pessoaId);
+		return "redirect:/pessoa/list";
+	} 
 	
 }

@@ -1,20 +1,33 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'pessoa')}">
 <body>
-	<h2>Pessoa</h2>
+	<h2>Informações da Pessoa</h2>
 	<table id="pessoa" class="table table-striped">
 		<thead>
 			<tr>
-				<th style="width: 150px;">Id</th>
-				<th style="width: 150px;">Nome</th>
+				<th colspan=2><div align="center" th:text="${pessoa.nome}"/></th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<td><a th:text="${pessoa.id}" /></a></td>
-				<td><a th:text="${pessoa.nome}" /></a></td>
+				<td th:text="Id" />
+				<td th:text="${pessoa.id}" />
 			</tr>
+			<tr>
+				<td th:text="Endereço" />
+				<td th:text="${pessoa.endereco}" />
+			</tr>
+			<tr>
+				<td th:text="Cidade" />
+				<td th:text="${pessoa.cidade}" />
+			</tr>
+			<tr>
+				<td th:text="Telefone" />
+				<td th:text="${pessoa.telefone}" />
+			</tr>
+			
 		</tbody>
 	</table>
+    <!-- <a th:href="@{{id}/pets/new(id=${pessoa.id})}" class="btn btn-default">Adicionar Animal</a> -->
 </body>
 </html>

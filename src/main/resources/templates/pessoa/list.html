@@ -1,18 +1,27 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'pessoa')}">
-<body>
+<body> 
+	<a th:href="@{~/pessoa/new}" class="btn btn-default">Cadastrar</a>
+	<a th:href="@{~/pessoa/find}" class="btn btn-default">Pesquisar</a>
+	<br /> <br />
 	<h2>Pessoas</h2>
 	<table id="pessoas" class="table table-striped">
 		<thead>
 			<tr>
-				<th style="width: 150px;">Id</th>
-				<th style="width: 150px;">Nome</th>
+				<th>Id</th>
+				<th>Nome</th>
+				<th>Ações</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr th:each="pessoa : ${pessoas}">
-				<td><a th:text="${pessoa.id}" /></a></td>
-				<td><a th:text="${pessoa.nome}" /></a></td>
+				<td><a th:href="@{~/pessoa/show/{id}(id=${pessoa.id})}" th:text="${pessoa.id}" /></a></td>
+				<td><a th:href="@{~/pessoa/show/{id}(id=${pessoa.id})}" th:text="${pessoa.nome}" /></a></td>
+				<td>
+					<a th:href="@{~/pessoa/show/{id}(id=${pessoa.id})}"><i class="glyphicon glyphicon-search"></i></a>
+					<a th:href="@{~/pessoa/{id}/edit(id=${pessoa.id})}"><i class="glyphicon glyphicon-edit"></i></a>
+					<a th:href="@{~/pessoa/delete/{id}(id=${pessoa.id})}"><i class="glyphicon glyphicon-trash"></i></a>
+				</td>
 			</tr>
 		</tbody>
 	</table>

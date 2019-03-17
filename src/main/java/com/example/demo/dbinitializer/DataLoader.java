@@ -21,8 +21,10 @@ public class DataLoader implements CommandLineRunner {
 	}
 
 	private void loadData() {
-		pessoaService.save(Pessoa.builder().nome("Rafael Tavares").build());
-		pessoaService.save(Pessoa.builder().nome("Miguel").build());
+		pessoaService.save(Pessoa.builder().nome("Rafael Tavares").cidade("Natal").endereco("R. Amapá N. 123").telefone("99994-8484").build());
+		pessoaService.save(Pessoa.builder().nome("Vanessa Dantas").cidade("Caicó").endereco("R. Beatriz Pinheiro N. 321").telefone("99995-8585").build());
+		pessoaService.save(Pessoa.builder().nome("Wellington Miguel").cidade("Recife").endereco("Rua dos Juvenis N. 3").telefone("99294-4278").build());
+		pessoaService.save(Pessoa.builder().nome("Patrik França").cidade("Mossoró").endereco("Rua dos chupetas N. 4").telefone("9993-2469").build());
 	}
 	
 }
