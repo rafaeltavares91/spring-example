@@ -64,5 +64,9 @@ public class Visita implements Persistivel {
 	public void setAnimal(Animal animal) {
 		this.animal = animal;
 	}
+	
+	public boolean isNew() {
+		return this.id == null;
+	}
 
 }

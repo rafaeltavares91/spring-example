@@ -50,5 +50,9 @@ public class Raca implements Persistivel {
 	public void setTipoAnimal(TipoAnimal tipoAnimal) {
 		this.tipoAnimal = tipoAnimal;
 	}
+	
+	public boolean isNew() {
+		return this.id == null;
+	}
 
 }

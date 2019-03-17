@@ -31,7 +31,7 @@ public class PessoaServiceImpl extends CRUDService<Pessoa> implements PessoaServ
 	
 	@Override
 	public List<Pessoa> findAllByNomeLike(String nome) {
-		return repository.findAllByNome(nome);
+		return repository.findAllByNomeLike(nome);
 	}
 	
 }

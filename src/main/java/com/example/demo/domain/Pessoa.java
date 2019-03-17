@@ -82,4 +82,8 @@ public class Pessoa implements Persistivel {
 		this.id = id;
 	}
 	
+	public boolean isNew() {
+		return this.id == null;
+	}
+	
 }

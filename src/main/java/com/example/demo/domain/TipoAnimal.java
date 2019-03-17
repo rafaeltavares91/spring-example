@@ -52,4 +52,8 @@ public class TipoAnimal implements Persistivel {
 		this.racas = racas;
 	}
 	
+	public boolean isNew() {
+		return this.id == null;
+	}
+	
 }

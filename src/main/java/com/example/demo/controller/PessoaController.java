@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -9,6 +11,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -41,8 +44,15 @@ public class PessoaController {
 		return "pessoa/list";
 	}
 	
+	@GetMapping("/show/{pessoaId}")
+	public ModelAndView show(@PathVariable("pessoaId") Long pessoaId) {
+		ModelAndView mav = new ModelAndView("pessoa/show");
+		mav.addObject(pessoaService.findById(pessoaId));
+		return mav;
+	}
+	
 	@RequestMapping("/find")
-	public String find(Model model) {
+	public String findForm(Model model) {
 		model.addAttribute("pessoa", Pessoa.builder().build());
 		return "pessoa/find";
 	}
@@ -65,11 +75,37 @@ public class PessoaController {
 		}
 	}
 	
-	@GetMapping({"/{pessoaId}", "/show/{pessoaId}"})
-	public ModelAndView show(@PathVariable("pessoaId") Long pessoaId) {
-		ModelAndView mav = new ModelAndView("pessoa/show");
-		mav.addObject(pessoaService.findById(pessoaId));
-		return mav;
+	@GetMapping("/new")
+    public String initCreationForm(Model model) {
+        model.addAttribute("pessoa", Pessoa.builder().build());
+        return "pessoa/form";
+    }
+	
+	@PostMapping("/new")
+	public String processCreationForm(@Valid Pessoa pessoa, BindingResult result) {
+		if (result.hasErrors()) {
+			return "pessoa/form";
+		} else {
+			pessoaService.save(pessoa);
+			return "redirect:/pessoa/show/" + pessoa.getId();
+		}
 	}
+	
+	@GetMapping("/{pessoaId}/edit")
+    public String initUpdateForm(@PathVariable Long pessoaId, Model model) {
+        model.addAttribute(pessoaService.findById(pessoaId));
+        return "redirect:/pessoa/form";
+    }
+
+    @PostMapping("/{pessoaId}/edit")
+    public String processUpdateForm(@Valid Pessoa pessoa, BindingResult result, @PathVariable Long pessoaId) {
+        if (result.hasErrors()) {
+            return "redirect:/pessoa/form";
+        } else {
+        	pessoa.setId(pessoaId);
+            pessoaService.save(pessoa);
+            return "redirect:/pessoa/show/" + pessoa.getId();
+        }
+    }
 	
 }

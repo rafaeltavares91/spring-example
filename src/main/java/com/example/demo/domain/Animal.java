@@ -63,4 +63,8 @@ public class Animal implements Persistivel {
 		this.pessoa = pessoa;
 	}
 	
+	public boolean isNew() {
+		return this.id == null;
+	}
+	
 }

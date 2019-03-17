@@ -6,4 +6,6 @@ public interface Persistivel {
 	
 	void setId(Long id);
 	
+	boolean isNew();
+	
 }
