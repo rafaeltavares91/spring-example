@@ -87,8 +87,8 @@ public class PessoaController {
 		if (result.hasErrors()) {
 			return "pessoa/form";
 		} else {
-			pessoaService.save(pessoa);
-			return "redirect:/pessoa/show/" + pessoa.getId();
+			Pessoa p = pessoaService.save(pessoa);
+			return "redirect:/pessoa/show/" + p.getId();
 		}
 	}
 	

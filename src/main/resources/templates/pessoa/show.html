@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'pessoa')}">
 <body>
-	<h2>Informações da Pessoa</h2>
 	<table id="pessoa" class="table table-striped">
 		<thead>
 			<tr>
-				<th colspan=2><div align="center" th:text="${pessoa.nome}"/></th>
+				<th colspan=2><div align="center">Informações da Pessoa</div></th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
 				<td th:text="Id" />
 				<td th:text="${pessoa.id}" />
+			</tr>
+			<tr>
+				<td th:text="Nome" />
+				<td th:text="${pessoa.nome}" />
 			</tr>
 			<tr>
 				<td th:text="Endereço" />
@@ -28,6 +31,5 @@
 			
 		</tbody>
 	</table>
-    <!-- <a th:href="@{{id}/pets/new(id=${pessoa.id})}" class="btn btn-default">Adicionar Animal</a> -->
 </body>
 </html>
