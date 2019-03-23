@@ -2,7 +2,6 @@ package com.example.demo.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.times;
@@ -70,20 +69,21 @@ class PessoaServiceImplTest {
     void findById() {
         when(repository.findById(anyLong())).thenReturn(pessoaRetornada);
 
-        Pessoa pessoa = service.findById(1L);
+        Optional<Pessoa> pessoa = service.findById(1L);
 
         assertNotNull(pessoa);
-        assertEquals(pessoaRetornada.get(), pessoa);
+        assertEquals(pessoaRetornada.get(), pessoa.get());
         verify(repository, times(1)).findById(any());
     }
 
     @Test
     void findByIdNotFound() {
-        when(repository.findById(anyLong())).thenReturn(Optional.empty());
+    	Optional<Pessoa> optEmpty = Optional.empty();
+        when(repository.findById(anyLong())).thenReturn(optEmpty);
 
-        Pessoa pessoa = service.findById(999L);
+        Optional<Pessoa> pessoa = service.findById(999L);
 
-        assertNull(pessoa);
+        assertEquals(pessoa, optEmpty);
         verify(repository, times(1)).findById(any());
     }
 

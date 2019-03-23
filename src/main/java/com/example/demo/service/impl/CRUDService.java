@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.data.repository.CrudRepository;
@@ -21,8 +22,8 @@ public abstract class CRUDService<T> implements AbstractCRUDService<T> {
 	}
 	
 	@Override
-    public T findById(Long id) {
-        return repository.findById(id).orElse(null);
+    public Optional<T> findById(Long id) {
+        return repository.findById(id);
     }
 	
 	@Override

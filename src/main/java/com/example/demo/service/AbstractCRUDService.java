@@ -1,12 +1,13 @@
 package com.example.demo.service;
 
+import java.util.Optional;
 import java.util.Set;
 
 public interface AbstractCRUDService<T> {
 
 	Set<T> findAll();
 
-    T findById(Long id);
+    Optional<T> findById(Long id);
 
     T save(T object);
 

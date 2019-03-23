@@ -1,23 +1,31 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.example.demo.domain.Pessoa;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.service.PessoaService;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * 
@@ -26,6 +34,7 @@ import com.example.demo.service.PessoaService;
  */
 @Controller
 @RequestMapping("/pessoa")
+@Log4j2
 public class PessoaController {
 	
 	private final PessoaService pessoaService;
@@ -47,8 +56,12 @@ public class PessoaController {
 	
 	@GetMapping("/show/{pessoaId}")
 	public ModelAndView show(@PathVariable("pessoaId") Long pessoaId) {
+		Optional<Pessoa> pessoa = pessoaService.findById(pessoaId);
+		if (!pessoa.isPresent()) {
+			throw new ResourceNotFoundException("Pessoa não encontrada.");
+		}
 		ModelAndView mav = new ModelAndView("pessoa/show");
-		mav.addObject(pessoaService.findById(pessoaId));
+		mav.addObject(pessoa.get());
 		return mav;
 	}
 	
@@ -94,7 +107,11 @@ public class PessoaController {
 	
 	@GetMapping("/{pessoaId}/edit")
     public String initUpdateForm(@PathVariable Long pessoaId, Model model) {
-        model.addAttribute("pessoa", pessoaService.findById(pessoaId));
+		Optional<Pessoa> pessoa = pessoaService.findById(pessoaId);
+		if (!pessoa.isPresent()) {
+			throw new ResourceNotFoundException("Pessoa não encontrada.");
+		}
+        model.addAttribute("pessoa", pessoa.get());
         return "pessoa/form";
     }
 
@@ -115,4 +132,26 @@ public class PessoaController {
 		return "redirect:/pessoa/list";
 	} 
 	
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler({EmptyResultDataAccessException.class, ResourceNotFoundException.class})
+    public ModelAndView handleNotFound(Exception e) {
+    	log.error("Handling ResourceNotFoundException");
+    	log.error(e.getMessage());
+    	ModelAndView mav = new ModelAndView();
+    	mav.setViewName("404error");
+    	mav.addObject("exception", e);
+    	return mav;
+    }
+    
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(NumberFormatException.class)
+    public ModelAndView handleBadRequest(Exception e) {
+    	log.error("Handling NumberFormatException");
+    	log.error(e.getMessage());
+    	ModelAndView mav = new ModelAndView();
+    	mav.setViewName("400error");
+    	mav.addObject("exception", e);
+    	return mav;
+    }
+    
 }

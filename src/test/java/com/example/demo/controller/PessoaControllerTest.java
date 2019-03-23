@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
@@ -15,6 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.util.Optional;
 import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +30,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.example.demo.domain.Pessoa;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.service.PessoaService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -71,7 +74,7 @@ public class PessoaControllerTest {
 	
 	@Test
 	public void show() throws Exception {
-		when(pessoaService.findById(anyLong())).thenReturn(Pessoa.builder().id(1l).build());
+		when(pessoaService.findById(anyLong())).thenReturn(Optional.of(Pessoa.builder().id(1l).build()));
 		
 		mockMvc.perform(get("/pessoa/show/1231"))
 			.andExpect(status().isOk())
@@ -136,7 +139,7 @@ public class PessoaControllerTest {
 
     @Test
     void processCreationForm() throws Exception {
-        when(pessoaService.save(ArgumentMatchers.any())).thenReturn(Pessoa.builder().id(1l).build());
+        when(pessoaService.save(any())).thenReturn(Pessoa.builder().id(1l).build());
 
         mockMvc.perform(post("/pessoa/new"))
                 .andExpect(status().is3xxRedirection())
@@ -148,7 +151,7 @@ public class PessoaControllerTest {
     
     @Test
     void initUpdateForm() throws Exception {
-        when(pessoaService.findById(anyLong())).thenReturn(Pessoa.builder().id(1l).build());
+        when(pessoaService.findById(anyLong())).thenReturn(Optional.of(Pessoa.builder().id(1l).build()));
 
         mockMvc.perform(get("/pessoa/1/edit"))
                 .andExpect(status().isOk())
@@ -160,7 +163,7 @@ public class PessoaControllerTest {
 
     @Test
     void processUpdateForm() throws Exception {
-        when(pessoaService.save(ArgumentMatchers.any())).thenReturn(Pessoa.builder().id(1l).build());
+        when(pessoaService.save(any())).thenReturn(Pessoa.builder().id(1l).build());
 
         mockMvc.perform(put("/pessoa/1/edit"))
                 .andExpect(status().is3xxRedirection())
@@ -177,6 +180,22 @@ public class PessoaControllerTest {
         	.andExpect(view().name("redirect:/pessoa/list"));
 
         verify(pessoaService).deleteById(1l);
+    }
+    
+    void handleNotFound() throws Exception {
+    	when(pessoaService.findById(anyLong())).thenThrow(ResourceNotFoundException.class);
+    	
+    	mockMvc.perform(get("/pessoa/show/1231"))
+			.andExpect(status().isNotFound())
+			.andExpect(view().name("404error"));
+    }
+    
+    void handleBadRequest() throws Exception {
+    	when(pessoaService.findById(anyLong())).thenThrow(ResourceNotFoundException.class);
+    	
+    	mockMvc.perform(get("/pessoa/show/abc"))
+			.andExpect(status().isBadRequest())
+			.andExpect(view().name("400error"));
     }
     
 }
