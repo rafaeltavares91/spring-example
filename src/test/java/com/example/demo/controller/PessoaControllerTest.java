@@ -11,7 +11,6 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -165,7 +164,7 @@ public class PessoaControllerTest {
     void processUpdateForm() throws Exception {
         when(pessoaService.save(any())).thenReturn(Pessoa.builder().id(1l).build());
 
-        mockMvc.perform(put("/pessoa/1/edit"))
+        mockMvc.perform(post("/pessoa/1/edit"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/pessoa/show/1"))
                 .andExpect(model().attributeExists("pessoa"));
