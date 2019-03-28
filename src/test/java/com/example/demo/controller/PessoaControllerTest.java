@@ -41,14 +41,14 @@ import com.google.common.collect.Sets;
 @ExtendWith(MockitoExtension.class)
 public class PessoaControllerTest {
 
-	PessoaController controller;
+	private PessoaController controller;
 	
 	@Mock
-	PessoaService pessoaService;
+	private PessoaService pessoaService;
 	
-	Set<Pessoa> pessoas;
+	private Set<Pessoa> pessoas;
 
-	MockMvc mockMvc;
+	private MockMvc mockMvc;
 	
 	@BeforeEach
 	public void setUp() {
@@ -147,7 +147,7 @@ public class PessoaControllerTest {
                 .andExpect(view().name("redirect:/pessoa/show/1"))
                 .andExpect(model().attributeExists("pessoa"));
 
-        verify(pessoaService).save(ArgumentMatchers.any());
+        verify(pessoaService).save(any());
     }
     
     @Test

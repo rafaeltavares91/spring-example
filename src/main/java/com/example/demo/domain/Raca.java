@@ -23,6 +23,10 @@ public class Raca implements Persistivel {
 
 	private String descricao;
 	
+	@ManyToOne
+	@JoinColumn(name = "id_tipo_animal")
+	private TipoAnimal tipoAnimal;
+	
 	public Long getId() {
 		return id;
 	}
@@ -30,10 +34,6 @@ public class Raca implements Persistivel {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
-	@ManyToOne
-	@JoinColumn(name = "id_tipo_animal")
-	private TipoAnimal tipoAnimal;
 	
 	public String getDescricao() {
 		return descricao;
