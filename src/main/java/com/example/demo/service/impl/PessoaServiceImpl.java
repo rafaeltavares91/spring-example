@@ -1,7 +1,7 @@
 package com.example.demo.service.impl;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.stereotype.Service;
 
@@ -25,13 +25,8 @@ public class PessoaServiceImpl extends CRUDService<Pessoa> implements PessoaServ
 	}
 	
 	@Override
-	public List<Pessoa> findAllByNome(String nome) {
-		return repository.findAllByNome(nome);
-	}
-	
-	@Override
-	public List<Pessoa> findAllByNomeLike(String nome) {
-		return repository.findAllByNomeLike(nome);
+	public Set<Pessoa> findAllByNomeLike(String nome) {
+		return repository.findByNomeContainingIgnoreCase(nome);
 	}
 	
 }

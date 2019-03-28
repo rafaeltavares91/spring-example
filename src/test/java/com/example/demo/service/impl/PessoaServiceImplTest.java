@@ -8,7 +8,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -21,6 +20,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.example.demo.domain.Pessoa;
 import com.example.demo.repository.PessoaRepository;
+import com.google.common.collect.Sets;
 
 @ExtendWith(MockitoExtension.class)
 class PessoaServiceImplTest {
@@ -28,33 +28,23 @@ class PessoaServiceImplTest {
 	public static final String NOME = "Rafael Tavares";
 	
     @Mock
-    PessoaRepository repository;
+    private PessoaRepository repository;
     
     @InjectMocks
-    PessoaServiceImpl service;
+    private PessoaServiceImpl service;
 
-    Optional<Pessoa> pessoaRetornada;
+    private Optional<Pessoa> pessoaRetornada;
 	
 	@BeforeEach
-	void setUp() {
+	public void setUp() {
 		pessoaRetornada = Optional.of(Pessoa.builder().id(1l).nome(NOME).build());
 	}
 	
-	@Test
-    void findByNome() {
-        when(repository.findByNome(any())).thenReturn(pessoaRetornada);
-
-        Optional<Pessoa> pessoa = service.findByNome(NOME);
-
-        assertEquals(NOME, pessoa.get().getNome());
-        verify(repository, times(1)).findByNome(any());
-    }
-
     @Test
-    void findAll() {
-        Set<Pessoa> pessoasRetornadas = new HashSet<>();
-        pessoasRetornadas.add(Pessoa.builder().id(1l).build());
-        pessoasRetornadas.add(Pessoa.builder().id(2l).build());
+    public void findAll() {
+        Set<Pessoa> pessoasRetornadas = Sets.newHashSet(
+        		Pessoa.builder().id(1l).build(), 
+        		Pessoa.builder().id(2l).build());
 
         when(repository.findAll()).thenReturn(pessoasRetornadas);
 
@@ -62,11 +52,12 @@ class PessoaServiceImplTest {
 
         assertNotNull(pessoas);
         assertEquals(2, pessoas.size());
+        assertEquals(pessoasRetornadas, pessoas);
         verify(repository, times(1)).findAll();
     }
 
     @Test
-    void findById() {
+    public void findById() {
         when(repository.findById(anyLong())).thenReturn(pessoaRetornada);
 
         Optional<Pessoa> pessoa = service.findById(1L);
@@ -77,7 +68,7 @@ class PessoaServiceImplTest {
     }
 
     @Test
-    void findByIdNotFound() {
+    public void findByIdNotFound() {
     	Optional<Pessoa> optEmpty = Optional.empty();
         when(repository.findById(anyLong())).thenReturn(optEmpty);
 
@@ -88,7 +79,7 @@ class PessoaServiceImplTest {
     }
 
     @Test
-    void save() {
+    public void save() {
         Pessoa pessoaParaSalvar = Pessoa.builder().id(1L).build();
 
         when(repository.save(any())).thenReturn(pessoaParaSalvar);
@@ -101,17 +92,43 @@ class PessoaServiceImplTest {
     }
 
     @Test
-    void delete() {
+    public void delete() {
         service.delete(pessoaRetornada.get());
 
+        verify(repository).delete(any());
         verify(repository, times(1)).delete(any());
     }
 
     @Test
-    void deleteById() {
+    public void deleteById() {
         service.deleteById(1L);
 
         verify(repository).deleteById(anyLong());
+        verify(repository, times(1)).deleteById(any());
+    }
+    
+    @Test
+	public void findByNome() {
+        when(repository.findByNome(any())).thenReturn(pessoaRetornada);
+
+        Optional<Pessoa> pessoa = service.findByNome(NOME);
+
+        assertEquals(NOME, pessoa.get().getNome());
+        verify(repository, times(1)).findByNome(any());
+    }
+    
+    @Test
+	public void findAllByNomeLike() {
+    	Set<Pessoa> pessoasRetornadas = Sets.newHashSet(
+        		Pessoa.builder().id(1l).build(), 
+        		Pessoa.builder().id(2l).build());
+    	
+        when(repository.findByNomeContainingIgnoreCase(any())).thenReturn(pessoasRetornadas);
+
+        Set<Pessoa> pessoas = service.findAllByNomeLike(NOME);
+
+        assertEquals(pessoasRetornadas, pessoas);
+        verify(repository, times(1)).findByNomeContainingIgnoreCase(any());
     }
     
 }

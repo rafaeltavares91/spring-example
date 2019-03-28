@@ -1,7 +1,7 @@
 package com.example.demo.controller;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -47,7 +47,7 @@ public class PessoaController {
 	}
 	
 	@GetMapping("/show/{pessoaId}")
-	public ModelAndView show(@PathVariable("pessoaId") Long pessoaId) {
+	public ModelAndView show(@PathVariable("pessoaId") Long pessoaId) throws Exception {
 		Optional<Pessoa> pessoa = pessoaService.findById(pessoaId);
 		if (!pessoa.isPresent()) {
 			throw new ResourceNotFoundException("Pessoa não encontrada.");
@@ -55,6 +55,11 @@ public class PessoaController {
 		ModelAndView mav = new ModelAndView("pessoa/show");
 		mav.addObject(pessoa.get());
 		return mav;
+	}
+	
+	@GetMapping("/error")
+	public void throwError() throws Exception {
+		throw new Exception();
 	}
 	
 	@RequestMapping("/find")
@@ -68,12 +73,12 @@ public class PessoaController {
 		if (pessoa.getNome() == null) {
 			pessoa.setNome("");
 		}
-		List<Pessoa> pessoas = pessoaService.findAllByNomeLike(pessoa.getNome());
+		Set<Pessoa> pessoas = pessoaService.findAllByNomeLike(pessoa.getNome());
 		if (pessoas.isEmpty()) {
 			result.rejectValue("nome", "notFound", "Não foi encontrado");
 			return "pessoa/find";
 		} else if (pessoas.size() == 1) {
-			pessoa = pessoas.get(0);
+			pessoa = pessoas.iterator().next();
 			return "redirect:/pessoa/show/" + pessoa.getId();
 		} else {
 			model.addAttribute("pessoas", pessoas);

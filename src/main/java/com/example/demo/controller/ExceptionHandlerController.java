@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ExceptionHandlerController {
 
 	@ResponseStatus(HttpStatus.NOT_FOUND)
-	@ExceptionHandler({ EmptyResultDataAccessException.class, ResourceNotFoundException.class })
+	@ExceptionHandler({EmptyResultDataAccessException.class, ResourceNotFoundException.class})
 	public ModelAndView handleNotFound(Exception e) {
 		log.error("Handling ResourceNotFoundException");
 		log.error(e.getMessage());
@@ -36,5 +36,5 @@ public class ExceptionHandlerController {
 		mav.addObject("exception", e);
 		return mav;
 	}
-
+	
 }

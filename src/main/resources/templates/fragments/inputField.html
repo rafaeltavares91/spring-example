@@ -13,10 +13,10 @@
             </div>
             <span th:if="${valid}" class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true" />
             <th:block th:if="${!valid}">
-	            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"/>
-            	<span class="help-inline" th:errors="*{__${name}__}">Error</span>
+	            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true" />
           	</th:block>
         </div>
+        <p th:if="${!valid}" class="label label-danger" th:errors="*{__${name}__}">Error</p>
       </div>
     </th:block>
   </form>

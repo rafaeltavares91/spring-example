@@ -22,8 +22,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -31,7 +31,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import com.example.demo.domain.Pessoa;
 import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.service.PessoaService;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 /**
@@ -42,15 +41,14 @@ import com.google.common.collect.Sets;
 @ExtendWith(MockitoExtension.class)
 public class PessoaControllerTest {
 
-	@InjectMocks
-	private PessoaController controller;
+	PessoaController controller;
 	
 	@Mock
-	private PessoaService pessoaService;
+	PessoaService pessoaService;
 	
-	private Set<Pessoa> pessoas;
+	Set<Pessoa> pessoas;
 
-	private MockMvc mockMvc;
+	MockMvc mockMvc;
 	
 	@BeforeEach
 	public void setUp() {
@@ -58,7 +56,10 @@ public class PessoaControllerTest {
 		pessoas.add(Pessoa.builder().id(1l).build());
 		pessoas.add(Pessoa.builder().id(2l).build());
 		
-		mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+		MockitoAnnotations.initMocks(this);
+
+		controller = new PessoaController(pessoaService);
+		mockMvc = MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(new ExceptionHandlerController()).build();
 	}
 	
 	@Test
@@ -93,7 +94,7 @@ public class PessoaControllerTest {
 	
 	@Test
     void processFindReturnOne() throws Exception {
-        when(pessoaService.findAllByNomeLike(anyString())).thenReturn(Lists.newArrayList(Pessoa.builder().id(1l).build()));
+        when(pessoaService.findAllByNomeLike(anyString())).thenReturn(Sets.newHashSet(Pessoa.builder().id(1l).build()));
 
         mockMvc.perform(get("/pessoa/procesFind"))
                 .andExpect(status().is3xxRedirection())
@@ -103,7 +104,7 @@ public class PessoaControllerTest {
 	@Test
     void processFindReturnMany() throws Exception {
         when(pessoaService.findAllByNomeLike(anyString()))
-                .thenReturn(Lists.newArrayList(
+                .thenReturn(Sets.newHashSet(
                 		Pessoa.builder().id(1l).build(),
                 		Pessoa.builder().id(2l).build()));
 
@@ -116,7 +117,7 @@ public class PessoaControllerTest {
 	@Test
     void processFindEmptyReturnMany() throws Exception {
         when(pessoaService.findAllByNomeLike(anyString()))
-                .thenReturn(Lists.newArrayList(
+                .thenReturn(Sets.newHashSet(
                 		Pessoa.builder().id(1l).build(),
                 		Pessoa.builder().id(2l).build()));
 
@@ -140,7 +141,8 @@ public class PessoaControllerTest {
     void processCreationForm() throws Exception {
         when(pessoaService.save(any())).thenReturn(Pessoa.builder().id(1l).build());
 
-        mockMvc.perform(post("/pessoa/new"))
+        mockMvc.perform(post("/pessoa/new")
+        				.param("nome", "Pessoa Teste"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/pessoa/show/1"))
                 .andExpect(model().attributeExists("pessoa"));
@@ -164,7 +166,8 @@ public class PessoaControllerTest {
     void processUpdateForm() throws Exception {
         when(pessoaService.save(any())).thenReturn(Pessoa.builder().id(1l).build());
 
-        mockMvc.perform(post("/pessoa/1/edit"))
+        mockMvc.perform(post("/pessoa/1/edit")
+        				.param("nome", "Pessoa Teste"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/pessoa/show/1"))
                 .andExpect(model().attributeExists("pessoa"));
@@ -181,6 +184,7 @@ public class PessoaControllerTest {
         verify(pessoaService).deleteById(1l);
     }
     
+    @Test
     void handleNotFound() throws Exception {
     	when(pessoaService.findById(anyLong())).thenThrow(ResourceNotFoundException.class);
     	
@@ -189,10 +193,11 @@ public class PessoaControllerTest {
 			.andExpect(view().name("404error"));
     }
     
+    @Test
     void handleBadRequest() throws Exception {
-    	when(pessoaService.findById(anyLong())).thenThrow(ResourceNotFoundException.class);
+    	when(pessoaService.findById(anyLong())).thenThrow(NumberFormatException.class);
     	
-    	mockMvc.perform(get("/pessoa/show/abc"))
+    	mockMvc.perform(get("/pessoa/show/1231"))
 			.andExpect(status().isBadRequest())
 			.andExpect(view().name("400error"));
     }

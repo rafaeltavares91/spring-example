@@ -1,2 +1,2 @@
-insert into pessoa (id, nome) values (1, 'Rafael Tavares');
-insert into pessoa (id, nome) values (2, 'Vanessa Dantas');
+insert into pessoa (id, nome, salario) values (1, 'Rafael Tavares', 1700);
+insert into pessoa (id, nome, salario) values (2, 'Vanessa Dantas', 2000);
