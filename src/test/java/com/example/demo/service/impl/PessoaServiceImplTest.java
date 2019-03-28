@@ -27,12 +27,12 @@ class PessoaServiceImplTest {
 	
 	public static final String NOME = "Rafael Tavares";
 	
+	@InjectMocks
+    private PessoaServiceImpl service;
+	
     @Mock
     private PessoaRepository repository;
     
-    @InjectMocks
-    private PessoaServiceImpl service;
-
     private Optional<Pessoa> pessoaRetornada;
 	
 	@BeforeEach

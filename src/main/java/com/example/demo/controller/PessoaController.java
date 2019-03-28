@@ -78,8 +78,7 @@ public class PessoaController {
 			result.rejectValue("nome", "notFound", "Não foi encontrado");
 			return "pessoa/find";
 		} else if (pessoas.size() == 1) {
-			pessoa = pessoas.iterator().next();
-			return "redirect:/pessoa/show/" + pessoa.getId();
+			return "redirect:/pessoa/show/" + pessoas.iterator().next().getId();
 		} else {
 			model.addAttribute("pessoas", pessoas);
 			return "pessoa/list";

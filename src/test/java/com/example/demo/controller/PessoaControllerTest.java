@@ -22,8 +22,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentMatchers;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -41,6 +41,7 @@ import com.google.common.collect.Sets;
 @ExtendWith(MockitoExtension.class)
 public class PessoaControllerTest {
 
+	@InjectMocks
 	private PessoaController controller;
 	
 	@Mock
@@ -52,13 +53,10 @@ public class PessoaControllerTest {
 	
 	@BeforeEach
 	public void setUp() {
-		pessoas = Sets.newHashSet();
-		pessoas.add(Pessoa.builder().id(1l).build());
-		pessoas.add(Pessoa.builder().id(2l).build());
+		pessoas = Sets.newHashSet(
+				Pessoa.builder().id(1l).build(),
+				Pessoa.builder().id(2l).build());
 		
-		MockitoAnnotations.initMocks(this);
-
-		controller = new PessoaController(pessoaService);
 		mockMvc = MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(new ExceptionHandlerController()).build();
 	}
 	
@@ -83,7 +81,7 @@ public class PessoaControllerTest {
 	}
 	
 	@Test
-    void find() throws Exception {
+	public void find() throws Exception {
         mockMvc.perform(get("/pessoa/find"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("pessoa/find"))
@@ -93,7 +91,7 @@ public class PessoaControllerTest {
     }
 	
 	@Test
-    void processFindReturnOne() throws Exception {
+	public void processFindReturnOne() throws Exception {
         when(pessoaService.findAllByNomeLike(anyString())).thenReturn(Sets.newHashSet(Pessoa.builder().id(1l).build()));
 
         mockMvc.perform(get("/pessoa/procesFind"))
@@ -102,7 +100,7 @@ public class PessoaControllerTest {
     }
 	
 	@Test
-    void processFindReturnMany() throws Exception {
+	public void processFindReturnMany() throws Exception {
         when(pessoaService.findAllByNomeLike(anyString()))
                 .thenReturn(Sets.newHashSet(
                 		Pessoa.builder().id(1l).build(),
@@ -115,7 +113,7 @@ public class PessoaControllerTest {
     }
 	
 	@Test
-    void processFindEmptyReturnMany() throws Exception {
+	public void processFindEmptyReturnMany() throws Exception {
         when(pessoaService.findAllByNomeLike(anyString()))
                 .thenReturn(Sets.newHashSet(
                 		Pessoa.builder().id(1l).build(),
@@ -128,7 +126,7 @@ public class PessoaControllerTest {
     }
 	
 	@Test
-    void initCreationForm() throws Exception {
+	public void initCreationForm() throws Exception {
         mockMvc.perform(get("/pessoa/new"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("pessoa/form"))
@@ -138,7 +136,7 @@ public class PessoaControllerTest {
     }
 
     @Test
-    void processCreationForm() throws Exception {
+    public void processCreationForm() throws Exception {
         when(pessoaService.save(any())).thenReturn(Pessoa.builder().id(1l).build());
 
         mockMvc.perform(post("/pessoa/new")
@@ -151,7 +149,7 @@ public class PessoaControllerTest {
     }
     
     @Test
-    void initUpdateForm() throws Exception {
+    public void initUpdateForm() throws Exception {
         when(pessoaService.findById(anyLong())).thenReturn(Optional.of(Pessoa.builder().id(1l).build()));
 
         mockMvc.perform(get("/pessoa/1/edit"))
@@ -163,7 +161,7 @@ public class PessoaControllerTest {
     }
 
     @Test
-    void processUpdateForm() throws Exception {
+    public void processUpdateForm() throws Exception {
         when(pessoaService.save(any())).thenReturn(Pessoa.builder().id(1l).build());
 
         mockMvc.perform(post("/pessoa/1/edit")
@@ -176,7 +174,7 @@ public class PessoaControllerTest {
     }
 	
     @Test
-    void delete() throws Exception {
+    public void delete() throws Exception {
         mockMvc.perform(get("/pessoa/delete/1"))
         	.andExpect(status().is3xxRedirection())
         	.andExpect(view().name("redirect:/pessoa/list"));
@@ -185,7 +183,7 @@ public class PessoaControllerTest {
     }
     
     @Test
-    void handleNotFound() throws Exception {
+    public void handleNotFound() throws Exception {
     	when(pessoaService.findById(anyLong())).thenThrow(ResourceNotFoundException.class);
     	
     	mockMvc.perform(get("/pessoa/show/1231"))
@@ -194,7 +192,7 @@ public class PessoaControllerTest {
     }
     
     @Test
-    void handleBadRequest() throws Exception {
+    public void handleBadRequest() throws Exception {
     	when(pessoaService.findById(anyLong())).thenThrow(NumberFormatException.class);
     	
     	mockMvc.perform(get("/pessoa/show/1231"))
