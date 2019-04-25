@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.util.Set;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +22,12 @@ public class PessoaRepositoryTest {
 	@Autowired
 	private PessoaRepository pessoaRepository;
 	
-	private Pessoa rafael;
+	private static Pessoa rafael;
 	
-	private Pessoa vanessa;
+	private static Pessoa vanessa;
 	
-	@BeforeEach
-	public void setUp() throws Exception {
+	@BeforeAll
+	public static void setUp() throws Exception {
 		rafael = Pessoa.builder().id(1l).nome("Rafael Tavares").salario(new BigDecimal(1700)).build();
 		vanessa = Pessoa.builder().id(2l).nome("Vanessa Dantas").salario(new BigDecimal(2000)).build();
 	}
