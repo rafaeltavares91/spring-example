@@ -5,35 +5,32 @@
 version: 2
 jobs:
     build:
+        
+        working_directory: ~/repo
+        
         docker:
-        # specify the version you desire here
+        
         - image: circleci/openjdk:11-browsers-legacy
 
-        # Specify service dependencies here if necessary
         # CircleCI maintains a library of pre-built images
         # documented at https://circleci.com/docs/2.0/circleci-images/
+        
         - image: circleci/postgres:9.4
-
-        working_directory: ~/repo
-
         environment:
-            # Customize the JVM maximum heap limit
-            MAVEN_OPTS: -Xmx3200m
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: postgres
-            DATABASE_URL: jdbc:postgresql://127.0.0.1:5432/petclinic
+            POSTGRES_DB: petclinic
             
         steps:
         - checkout
         
-        - run: apt-get update -qq && apt-get install -y postgresql
-        
         - run:
-              command: |
-              psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE petclinic;"
-              psql -h 127.0.0.1 -U postgres -c "CREATE USER postgres WITH PASSWORD 'password'; GRANT ALL PRIVILEGES ON DATABASE petclinic TO postgres;"
+        command: sudo -u postgres psql -p 5432 -c "create database petclinic;"
+        command: sudo -u postgres psql -p 5432 -c "create user postgres with password 'postgres';"
+        command: sudo -u postgres psql -p 5432 -c "grant all privileges on database petclinic to postgres;"
 
         # Download and cache dependencies
+        
         - restore_cache:
               keys:
               - v1-dependencies-{{ checksum "pom.xml" }}
