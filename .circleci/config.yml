@@ -26,10 +26,12 @@ jobs:
         steps:
         - checkout
         
+        - run: apt-get update -qq && apt-get install -y postgresql
+        
         - run:
               command: |
-              psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE databasename;"
-              psql -h 127.0.0.1 -U postgres -c "CREATE USER username WITH PASSWORD 'password'; GRANT ALL PRIVILEGES ON DATABASE databasename TO username;"
+              psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE petclinic;"
+              psql -h 127.0.0.1 -U postgres -c "CREATE USER postgres WITH PASSWORD 'password'; GRANT ALL PRIVILEGES ON DATABASE petclinic TO postgres;"
 
         # Download and cache dependencies
         - restore_cache:
