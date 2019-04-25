@@ -21,10 +21,15 @@ jobs:
             MAVEN_OPTS: -Xmx3200m
             POSTGRES_USER: postgres
             POSTGRES_PASSWORD: postgres
-            POSTGRES_DB: petclinic
+            DATABASE_URL: jdbc:postgresql://127.0.0.1:5432/petclinic
             
         steps:
         - checkout
+        
+        - run:
+          command: |
+            psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE petclinic;"
+            psql -h 127.0.0.1 -U postgres -c "CREATE USER postgres WITH PASSWORD 'postgres'; GRANT ALL PRIVILEGES ON DATABASE petclinic TO postgres;"
 
         # Download and cache dependencies
         - restore_cache:
@@ -42,5 +47,4 @@ jobs:
               - ~/.m2
               key: v1-dependencies-{{ checksum "pom.xml" }}
 
-        # run tests!
         - run: mvn test
