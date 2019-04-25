@@ -27,9 +27,9 @@ jobs:
         - checkout
         
         - run:
-          command: |
-            psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE petclinic;"
-            psql -h 127.0.0.1 -U postgres -c "CREATE USER postgres WITH PASSWORD 'postgres'; GRANT ALL PRIVILEGES ON DATABASE petclinic TO postgres;"
+              command: |
+              psql -h 127.0.0.1 -U postgres -c "CREATE DATABASE databasename;"
+              psql -h 127.0.0.1 -U postgres -c "CREATE USER username WITH PASSWORD 'password'; GRANT ALL PRIVILEGES ON DATABASE databasename TO username;"
 
         # Download and cache dependencies
         - restore_cache:
