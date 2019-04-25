@@ -20,7 +20,7 @@ jobs:
             POSTGRES_DB: petclinic
   
         working_directory: ~/repo
-  		
+ 
         steps:
         - checkout
 
